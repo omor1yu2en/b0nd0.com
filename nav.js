@@ -36,6 +36,17 @@
   overlay.addEventListener('click', close);
   panel.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
 
+  // Page transitions
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href]');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (a.target === '_blank' || href.startsWith('#') || href.startsWith('mailto:')) return;
+    e.preventDefault();
+    document.body.classList.add('fading');
+    setTimeout(() => { location.href = href; }, 200);
+  });
+
   // Language toggle
   const lang = localStorage.getItem('lang') || 'en';
   function setLang(l) {
