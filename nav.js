@@ -36,14 +36,21 @@
   overlay.addEventListener('click', close);
   panel.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
 
-  // Page transitions
+  // Page transitions — pure JS, no animation/transition conflict
+  const body = document.body;
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    body.style.transition = 'opacity 0.45s ease-out';
+    body.style.opacity = '1';
+  }));
+
   document.addEventListener('click', e => {
     const a = e.target.closest('a[href]');
     if (!a) return;
     const href = a.getAttribute('href');
     if (a.target === '_blank' || href.startsWith('#') || href.startsWith('mailto:')) return;
     e.preventDefault();
-    document.body.classList.add('fading');
+    body.style.transition = 'opacity 0.35s ease-in';
+    body.style.opacity = '0';
     setTimeout(() => { location.href = href; }, 350);
   });
 
