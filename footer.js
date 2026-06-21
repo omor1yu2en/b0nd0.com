@@ -6,7 +6,7 @@ class B0nd0Footer extends HTMLElement {
         :host {
           display: block;
           text-align: center;
-          padding: 1.5rem 0 1rem;
+          padding: 1.5rem 0 calc(1rem + 5.5px);
           font-family: 'Inter', -apple-system, sans-serif;
           font-size: 11px;
           font-weight: 200;
