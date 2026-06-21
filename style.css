@@ -144,7 +144,7 @@ main {
   font-size: 13px;
   font-weight: 300;
   letter-spacing: 0.02em;
-  color: #000;
+  color: rgba(0, 0, 0, 0.55);
   line-height: 1.8;
   text-align: center;
 }
