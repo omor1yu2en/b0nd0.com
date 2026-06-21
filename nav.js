@@ -44,7 +44,7 @@
     if (a.target === '_blank' || href.startsWith('#') || href.startsWith('mailto:')) return;
     e.preventDefault();
     document.body.classList.add('fading');
-    setTimeout(() => { location.href = href; }, 200);
+    setTimeout(() => { location.href = href; }, 350);
   });
 
   // Language toggle
