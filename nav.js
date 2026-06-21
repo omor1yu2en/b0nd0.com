@@ -3,11 +3,13 @@
     <button class="menu-btn" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
+    <a class="site-title" href="/">b0nd0.com</a>
     <div class="overlay" id="overlay"></div>
     <aside class="side-panel" id="sidePanel">
       <nav>
         <a href="/about">About</a>
         <a href="/playground">Playground</a>
+        <a href="/contact">Contact</a>
       </nav>
     </aside>
   `);
