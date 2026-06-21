@@ -4,7 +4,7 @@
       <span></span><span></span><span></span>
     </button>
     <div class="site-header">
-      <a class="site-title" href="/">b0nd0.com</a>
+      <a class="site-title" href="/">b0nd0</a>
       <span class="page-name"></span>
     </div>
     <div class="lang-toggle">
@@ -27,7 +27,7 @@
   const overlay = document.getElementById('overlay');
 
   // Page name under title
-  const pageNames = { '/playground': 'Playground', '/contact': 'Contact' };
+  const pageNames = { '/playground': 'PLAYGROUND', '/contact': 'CONTACT' };
   const pageName = pageNames[location.pathname] || '';
   document.querySelector('.page-name').textContent = pageName;
 
