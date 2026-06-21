@@ -3,7 +3,10 @@
     <button class="menu-btn" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
-    <a class="site-title" href="/">b0nd0.com</a>
+    <div class="site-header">
+      <a class="site-title" href="/">b0nd0.com</a>
+      <span class="page-name"></span>
+    </div>
     <div class="lang-toggle">
       <button data-lang="ja">JA</button>
       <span>/</span>
@@ -22,6 +25,11 @@
   const btn   = document.querySelector('.menu-btn');
   const panel = document.getElementById('sidePanel');
   const overlay = document.getElementById('overlay');
+
+  // Page name under title
+  const pageNames = { '/playground': 'Playground', '/contact': 'Contact' };
+  const pageName = pageNames[location.pathname] || '';
+  document.querySelector('.page-name').textContent = pageName;
 
   // Highlight current page
   const path = location.pathname.replace(/\/$/, '') || '/';

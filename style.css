@@ -48,13 +48,19 @@ body {
 [data-lang="en"] .ja { display: none; }
 [data-lang="ja"] .en { display: none; }
 
-/* Site title */
-.site-title {
+/* Site header */
+.site-header {
   position: fixed;
   top: 1.5rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 89;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+}
+.site-title {
   font-size: 13px;
   font-weight: 200;
   letter-spacing: 0.05em;
@@ -64,6 +70,13 @@ body {
   transition: opacity 0.15s;
 }
 .site-title:hover { opacity: 0.3; }
+.page-name {
+  font-size: 10px;
+  font-weight: 200;
+  letter-spacing: 0.06em;
+  color: rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+}
 
 /* Hamburger */
 .menu-btn {
