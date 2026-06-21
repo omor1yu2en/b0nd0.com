@@ -172,6 +172,29 @@ main {
   text-transform: uppercase;
 }
 
+/* Contact */
+.contact-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+.contact-label {
+  font-size: 11px;
+  font-weight: 200;
+  letter-spacing: 0.06em;
+  color: rgba(0, 0, 0, 0.3);
+}
+.contact-email {
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 0.03em;
+  color: rgba(0, 0, 0, 0.55);
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+.contact-email:hover { opacity: 0.35; }
+
 /* About — EN */
 .about-text {
   max-width: 380px;

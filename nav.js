@@ -17,6 +17,7 @@
       <nav>
         <a href="/about">About</a>
         <a href="/playground">Playground</a>
+        <a href="/photos">Photos</a>
         <a href="/contact">Contact</a>
       </nav>
     </aside>
@@ -27,7 +28,7 @@
   const overlay = document.getElementById('overlay');
 
   // Page name under title
-  const pageNames = { '/playground': 'PLAYGROUND', '/contact': 'CONTACT' };
+  const pageNames = { '/playground': 'PLAYGROUND', '/photos': 'PHOTOS', '/contact': 'CONTACT' };
   const pageName = pageNames[location.pathname] || '';
   document.querySelector('.page-name').textContent = pageName;
 
