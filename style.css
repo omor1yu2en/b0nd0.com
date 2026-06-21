@@ -11,6 +11,41 @@ body {
   min-height: 100dvh;
 }
 
+/* Language toggle */
+.lang-toggle {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 11px;
+  font-weight: 200;
+  letter-spacing: 0.05em;
+  color: rgba(0, 0, 0, 0.55);
+}
+.lang-toggle span { opacity: 0.4; }
+.lang-toggle button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  padding: 0;
+  letter-spacing: inherit;
+  transition: opacity 0.15s;
+}
+.lang-toggle button.active {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.lang-toggle button:not(.active):hover { opacity: 0.35; }
+
+/* Language visibility */
+[data-lang="en"] .ja { display: none; }
+[data-lang="ja"] .en { display: none; }
+
 /* Site title */
 .site-title {
   position: fixed;
