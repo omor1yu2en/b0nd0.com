@@ -105,6 +105,15 @@ main {
   padding: 2rem;
 }
 
+.tagline {
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  color: #000;
+  line-height: 1.8;
+  text-align: center;
+}
+
 .page-label {
   font-size: 11px;
   font-weight: 200;
