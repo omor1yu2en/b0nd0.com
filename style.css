@@ -1,7 +1,5 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-main { opacity: 0; }
-
 body {
   font-family: 'Inter', -apple-system, sans-serif;
   font-weight: 300;
@@ -147,6 +145,7 @@ body {
 
 /* Main */
 main {
+  opacity: 0;
   flex: 1;
   display: flex;
   flex-direction: column;
