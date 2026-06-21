@@ -23,7 +23,7 @@ class B0nd0Footer extends HTMLElement {
           text-underline-offset: 2px;
         }
       </style>
-      <span>Powered by <a href="https://b0nd0.com" target="_blank" rel="noopener noreferrer">b0nd0.com</a></span>
+      <span>Held together by <a href="https://b0nd0.com" target="_blank" rel="noopener noreferrer">b0nd0.com</a></span>
     `;
   }
 }
