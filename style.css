@@ -157,6 +157,44 @@ main {
   text-transform: uppercase;
 }
 
+/* About — EN */
+.about-text {
+  max-width: 380px;
+  text-align: center;
+}
+.about-text p {
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(0, 0, 0, 0.6);
+  line-height: 1.9;
+  letter-spacing: 0.01em;
+}
+
+/* About — JA */
+.about-qa {
+  max-width: 420px;
+  width: 100%;
+}
+.qa-item {
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+.qa-item:first-child { border-top: 1px solid rgba(0, 0, 0, 0.06); }
+.qa-item .q {
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(0, 0, 0, 0.4);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.01em;
+}
+.qa-item .a {
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(0, 0, 0, 0.75);
+  letter-spacing: 0.01em;
+  line-height: 1.7;
+}
+
 /* Playground */
 .project-list {
   width: 100%;
