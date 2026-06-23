@@ -66,7 +66,7 @@
           60 + Math.random() * (W - 120),
           -(SZ + Math.random() * H * 0.7),
           tw, SZ * 1.2,
-          { restitution: 0.25, friction: 0.5, frictionAir: 0.01, label: ch }
+          { restitution: 0.1, friction: 0.5, frictionAir: 0.05, label: ch }
         );
         Body.setAngularVelocity(b, (Math.random() - 0.5) * 0.2);
         World.add(engine.world, b);
@@ -170,7 +170,8 @@
         const dx = b._tx - b.position.x;
         const dy = b._ty - b.position.y;
         if (Math.hypot(dx, dy) > 3) done = false;
-        Body.applyForce(b, b.position, { x: dx * 0.0032, y: dy * 0.0032 });
+        const gatherK = W < 768 ? 0.0014 : 0.0032;
+        Body.applyForce(b, b.position, { x: dx * gatherK, y: dy * gatherK });
         Body.setVelocity(b, { x: b.velocity.x * 0.87, y: b.velocity.y * 0.87 });
         const da = ((b._ta - b.angle + Math.PI) % (Math.PI * 2)) - Math.PI;
         Body.setAngularVelocity(b, b.angularVelocity * 0.87 + da * 0.056);
