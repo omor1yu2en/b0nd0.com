@@ -5,20 +5,217 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>b0nd0</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;800&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="stylesheet" href="style.css">
+  <style>
+    #world { position: fixed; inset: 0; z-index: 0; }
+    b0nd0-footer { position: relative; z-index: 1; }
+  </style>
 </head>
 <body>
   <main>
-    <p class="tagline">
-      <span class="en">Pure craft, zero utility.<br>Held together by b0nd0.</span>
-      <span class="ja">純度100%、実用性0%<br>洗練されたナンセンス</span>
-    </p>
+    <canvas id="world"></canvas>
   </main>
+  <script src="https://unpkg.com/matter-js@0.19.0/build/matter.min.js"></script>
   <script src="footer.js"></script>
   <b0nd0-footer></b0nd0-footer>
   <script src="nav.js"></script>
+  <script>
+  (function () {
+    const { Engine, Runner, Bodies, Body, World, Mouse, MouseConstraint, Events, Composite } = Matter;
+
+    const canvas = document.getElementById('world');
+    const ctx    = canvas.getContext('2d');
+    let W = canvas.width  = window.innerWidth;
+    let H = canvas.height = window.innerHeight;
+
+    const engine = Engine.create({ gravity: { y: 1.8 } });
+    Runner.run(Runner.create(), engine);
+
+    const floor = Bodies.rectangle(W / 2,  H + 30, W * 3, 60, { isStatic: true });
+    const wallL = Bodies.rectangle(-30,    H / 2,  60, H * 3, { isStatic: true });
+    const wallR = Bodies.rectangle(W + 30, H / 2,  60, H * 3, { isStatic: true });
+    World.add(engine.world, [floor, wallL, wallR]);
+
+    const SZ   = Math.min(Math.max(W * 0.12, 40), 80);
+    const FONT = `800 ${SZ}px Inter, -apple-system, sans-serif`;
+    ctx.font   = FONT;
+
+    const CHARS = 'b0nd0'.repeat(6).split('');
+    const bodies = [];
+    let si = 0;
+
+    function spawn() {
+      if (si >= CHARS.length) return;
+      const ch = CHARS[si++];
+      const tw = ctx.measureText(ch).width + 10;
+      const b  = Bodies.rectangle(
+        60 + Math.random() * (W - 120),
+        -(SZ * 1.2),
+        tw, SZ * 1.2,
+        { restitution: 0.25, friction: 0.5, frictionAir: 0.01, label: ch }
+      );
+      Body.setAngularVelocity(b, (Math.random() - 0.5) * 0.2);
+      World.add(engine.world, b);
+      bodies.push(b);
+      if (si < CHARS.length) setTimeout(spawn, 100 + Math.random() * 100);
+    }
+
+    const go = () => { ctx.font = FONT; spawn(); };
+    const t  = setTimeout(go, 800);
+    document.fonts.ready.then(() => { clearTimeout(t); go(); });
+
+    const mouse = Mouse.create(canvas);
+    const mc    = MouseConstraint.create(engine, {
+      mouse,
+      constraint: { stiffness: 0.15, damping: 0.1, render: { visible: false } },
+    });
+    World.add(engine.world, mc);
+
+    let grabbing = false;
+    Events.on(mc, 'startdrag', () => { grabbing = true; });
+
+    let downAt = null;
+    function pDown(x, y) { grabbing = false; downAt = { x, y }; }
+    function pUp(x, y) {
+      if (!grabbing && downAt && Math.hypot(x - downAt.x, y - downAt.y) < 8) onTap();
+      downAt = null;
+    }
+    canvas.addEventListener('mousedown', e => pDown(e.clientX, e.clientY));
+    canvas.addEventListener('mouseup',   e => pUp(e.clientX, e.clientY));
+    canvas.addEventListener('touchstart', e => pDown(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+    canvas.addEventListener('touchend',   e => pUp(e.changedTouches[0].clientX, e.changedTouches[0].clientY), { passive: true });
+
+    let state  = 'scattered';
+    let formed = [];
+
+    function onTap() {
+      if (si < CHARS.length) return;
+      state === 'formed' ? scatter() : gather();
+    }
+
+    function gather() {
+      formed.forEach(b => { b._forming = false; b._formed = false; Body.setStatic(b, false); });
+      formed = [];
+      const needed = ['b', '0', 'n', 'd', '0'];
+      const used   = new Set();
+      const picks  = [];
+      for (const ch of needed) {
+        const pool = bodies.filter(b => b.label === ch && !used.has(b));
+        if (!pool.length) return;
+        const p = pool[Math.floor(Math.random() * pool.length)];
+        used.add(p);
+        picks.push(p);
+      }
+      const gap = SZ * 1.25;
+      picks.forEach((b, i) => {
+        b._forming = true;
+        b._formed  = false;
+        b._tx = W / 2 - gap * 2 + i * gap + (Math.random() - 0.5) * SZ * 0.4;
+        b._ty = H / 2                      + (Math.random() - 0.5) * SZ * 0.5;
+        b._ta = (Math.random() - 0.5) * 0.5;
+        formed.push(b);
+      });
+      state = 'forming';
+    }
+
+    function scatter() {
+      formed.forEach(b => {
+        b._forming = false;
+        b._formed  = false;
+        Body.setStatic(b, false);
+        const dx = b.position.x - W / 2;
+        const dy = b.position.y - H / 2;
+        const d  = Math.hypot(dx, dy) || 1;
+        const f  = 0.015 + Math.random() * 0.018;
+        Body.applyForce(b, b.position, {
+          x: (dx / d) * f + (Math.random() - 0.5) * 0.008,
+          y: (dy / d) * f - 0.02,
+        });
+        Body.setAngularVelocity(b, (Math.random() - 0.5) * 0.6);
+      });
+      formed = [];
+      state  = 'scattered';
+    }
+
+    Events.on(engine, 'beforeUpdate', () => {
+      if (state !== 'forming') return;
+      let done = true;
+      formed.forEach(b => {
+        const dx = b._tx - b.position.x;
+        const dy = b._ty - b.position.y;
+        if (Math.hypot(dx, dy) > 3) done = false;
+        Body.applyForce(b, b.position, { x: dx * 0.004, y: dy * 0.004 });
+        Body.setVelocity(b, { x: b.velocity.x * 0.87, y: b.velocity.y * 0.87 });
+        const da = ((b._ta - b.angle + Math.PI) % (Math.PI * 2)) - Math.PI;
+        Body.setAngularVelocity(b, b.angularVelocity * 0.87 + da * 0.07);
+      });
+      if (done && formed.length) {
+        formed.forEach(b => {
+          Body.setPosition(b,        { x: b._tx, y: b._ty });
+          Body.setAngle(b,           b._ta);
+          Body.setVelocity(b,        { x: 0, y: 0 });
+          Body.setAngularVelocity(b, 0);
+          Body.setStatic(b,          true);
+          b._forming = false;
+          b._formed  = true;
+        });
+        state = 'formed';
+      }
+    });
+
+    let hintAlpha = 0;
+    const hintIn = setTimeout(() => {
+      const iv = setInterval(() => {
+        hintAlpha += 0.04;
+        if (hintAlpha >= 0.28) { hintAlpha = 0.28; clearInterval(iv); }
+      }, 30);
+    }, 2500);
+    function fadeHint() {
+      clearTimeout(hintIn);
+      const iv = setInterval(() => {
+        hintAlpha -= 0.04;
+        if (hintAlpha <= 0) { hintAlpha = 0; clearInterval(iv); }
+      }, 30);
+      canvas.removeEventListener('mouseup',  fadeHint);
+      canvas.removeEventListener('touchend', fadeHint);
+    }
+    canvas.addEventListener('mouseup',  fadeHint);
+    canvas.addEventListener('touchend', fadeHint);
+
+    function draw() {
+      requestAnimationFrame(draw);
+      ctx.clearRect(0, 0, W, H);
+      ctx.font         = FONT;
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'middle';
+      Composite.allBodies(engine.world).forEach(b => {
+        if (!b.label || b.label.length !== 1) return;
+        ctx.save();
+        ctx.translate(b.position.x, b.position.y);
+        ctx.rotate(b.angle);
+        ctx.fillStyle = b._formed ? '#000' : 'rgba(0,0,0,0.68)';
+        ctx.fillText(b.label, 0, 0);
+        ctx.restore();
+      });
+      if (hintAlpha > 0) {
+        ctx.font      = `200 12px Inter, sans-serif`;
+        ctx.fillStyle = `rgba(0,0,0,${hintAlpha})`;
+        ctx.textAlign = 'center';
+        ctx.fillText('tap', W / 2, H - 38);
+      }
+    }
+    draw();
+
+    window.addEventListener('resize', () => {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+      Body.setPosition(floor,  { x: W / 2,  y: H + 30 });
+      Body.setPosition(wallR,  { x: W + 30, y: H / 2  });
+    });
+  })();
+  </script>
 </body>
 </html>
