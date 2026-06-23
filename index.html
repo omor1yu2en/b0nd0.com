@@ -44,16 +44,18 @@
     const engine = Engine.create({ gravity: { y: 1.8 } });
     Runner.run(Runner.create(), engine);
 
-    const floor = Bodies.rectangle(W / 2,  H + 30, W * 3, 60, { isStatic: true });
-    const wallL = Bodies.rectangle(-30,    H / 2,  60, H * 3, { isStatic: true });
-    const wallR = Bodies.rectangle(W + 30, H / 2,  60, H * 3, { isStatic: true });
-    World.add(engine.world, [floor, wallL, wallR]);
+    const floor   = Bodies.rectangle(W / 2,  H + 30, W * 3, 60, { isStatic: true });
+    const ceiling = Bodies.rectangle(W / 2, -20,    W * 3, 60, { isStatic: true });
+    const wallL   = Bodies.rectangle(-30,    H / 2,  60, H * 3, { isStatic: true });
+    const wallR   = Bodies.rectangle(W + 30, H / 2,  60, H * 3, { isStatic: true });
+    World.add(engine.world, [floor, ceiling, wallL, wallR]);
 
     const SZ   = Math.min(Math.max(W * 0.065, 22), 42);
     const FONT = `300 ${SZ}px Inter, -apple-system, sans-serif`;
     ctx.font   = FONT;
 
-    const CHARS = 'b0nd0'.repeat(16).split('').slice(0, 72);
+    const COUNT = window.innerWidth < 768 ? 36 : 72;
+    const CHARS = 'b0nd0'.repeat(Math.ceil(COUNT / 5)).split('').slice(0, COUNT);
     const bodies = [];
     let ready = false;
 
