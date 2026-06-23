@@ -41,7 +41,7 @@
     }
     sizeCanvas();
 
-    const engine = Engine.create({ gravity: { y: 1.8 } });
+    const engine = Engine.create({ gravity: { y: 1.8 }, enableSleeping: true });
     Runner.run(Runner.create(), engine);
 
     const floor = Bodies.rectangle(W / 2,  H + 30, W * 3, 60, { isStatic: true });
@@ -99,7 +99,7 @@
     }
     canvas.addEventListener('mousedown', e => { if (Date.now() - lastTouch < 500) return; pDown(e.clientX, e.clientY); });
     canvas.addEventListener('mouseup',   e => { if (Date.now() - lastTouch < 500) return; pUp(e.clientX, e.clientY); });
-    canvas.addEventListener('touchstart', e => { lastTouch = Date.now(); pDown(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+    canvas.addEventListener('touchstart', e => { e.preventDefault(); lastTouch = Date.now(); pDown(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
     canvas.addEventListener('touchend',   e => { e.preventDefault(); lastTouch = Date.now(); pUp(e.changedTouches[0].clientX, e.changedTouches[0].clientY); });
 
     let state  = 'scattered';
