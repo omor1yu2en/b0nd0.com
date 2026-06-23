@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>b0nd0</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="stylesheet" href="style.css">
@@ -39,11 +39,11 @@
     const wallR = Bodies.rectangle(W + 30, H / 2,  60, H * 3, { isStatic: true });
     World.add(engine.world, [floor, wallL, wallR]);
 
-    const SZ   = Math.min(Math.max(W * 0.12, 40), 80);
-    const FONT = `800 ${SZ}px Inter, -apple-system, sans-serif`;
+    const SZ   = Math.min(Math.max(W * 0.065, 22), 42);
+    const FONT = `300 ${SZ}px Inter, -apple-system, sans-serif`;
     ctx.font   = FONT;
 
-    const CHARS = 'b0nd0'.repeat(6).split('');
+    const CHARS = 'b0nd0'.repeat(16).split('');
     const bodies = [];
     let si = 0;
 
@@ -60,7 +60,7 @@
       Body.setAngularVelocity(b, (Math.random() - 0.5) * 0.2);
       World.add(engine.world, b);
       bodies.push(b);
-      if (si < CHARS.length) setTimeout(spawn, 100 + Math.random() * 100);
+      if (si < CHARS.length) setTimeout(spawn, 55 + Math.random() * 55);
     }
 
     const go = () => { ctx.font = FONT; spawn(); };
@@ -109,7 +109,7 @@
         used.add(p);
         picks.push(p);
       }
-      const gap = SZ * 1.25;
+      const gap = SZ * 1.6;
       picks.forEach((b, i) => {
         b._forming = true;
         b._formed  = false;
@@ -196,7 +196,7 @@
         ctx.save();
         ctx.translate(b.position.x, b.position.y);
         ctx.rotate(b.angle);
-        ctx.fillStyle = b._formed ? '#000' : 'rgba(0,0,0,0.68)';
+        ctx.fillStyle = b._formed ? 'rgba(0,0,0,0.75)' : 'rgba(0,0,0,0.22)';
         ctx.fillText(b.label, 0, 0);
         ctx.restore();
       });
