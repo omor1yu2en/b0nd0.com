@@ -160,10 +160,10 @@
         const dx = b._tx - b.position.x;
         const dy = b._ty - b.position.y;
         if (Math.hypot(dx, dy) > 3) done = false;
-        Body.applyForce(b, b.position, { x: dx * 0.004, y: dy * 0.004 });
+        Body.applyForce(b, b.position, { x: dx * 0.0032, y: dy * 0.0032 });
         Body.setVelocity(b, { x: b.velocity.x * 0.87, y: b.velocity.y * 0.87 });
         const da = ((b._ta - b.angle + Math.PI) % (Math.PI * 2)) - Math.PI;
-        Body.setAngularVelocity(b, b.angularVelocity * 0.87 + da * 0.07);
+        Body.setAngularVelocity(b, b.angularVelocity * 0.87 + da * 0.056);
       });
       if (done && formed.length) {
         formed.forEach(b => {
