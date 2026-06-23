@@ -53,7 +53,7 @@
     const FONT = `300 ${SZ}px Inter, -apple-system, sans-serif`;
     ctx.font   = FONT;
 
-    const CHARS = 'b0nd0'.repeat(16).split('');
+    const CHARS = 'b0nd0'.repeat(16).split('').slice(0, 72);
     const bodies = [];
     let ready = false;
 
@@ -120,7 +120,7 @@
         used.add(p);
         picks.push(p);
       }
-      const gap = SZ * 1.6;
+      const gap = SZ * 1.1;
       picks.forEach((b, i) => {
         b._forming = true;
         b._formed  = false;
