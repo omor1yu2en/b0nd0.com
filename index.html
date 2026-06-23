@@ -126,6 +126,8 @@
       }
       const gap = SZ * 1.1;
       picks.forEach((b, i) => {
+        Body.setVelocity(b, { x: 0, y: 0 });
+        Body.setAngularVelocity(b, 0);
         b._forming = true;
         b._formed  = false;
         b._tx = W / 2 - gap * 2 + i * gap + (Math.random() - 0.5) * SZ * 0.4;
