@@ -91,15 +91,16 @@
     Events.on(mc, 'startdrag', () => { grabbing = true; });
 
     let downAt = null;
+    let lastTouch = 0;
     function pDown(x, y) { grabbing = false; downAt = { x, y }; }
     function pUp(x, y) {
       if (!grabbing && downAt && Math.hypot(x - downAt.x, y - downAt.y) < 8) onTap();
       downAt = null;
     }
-    canvas.addEventListener('mousedown', e => pDown(e.clientX, e.clientY));
-    canvas.addEventListener('mouseup',   e => pUp(e.clientX, e.clientY));
-    canvas.addEventListener('touchstart', e => pDown(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
-    canvas.addEventListener('touchend',   e => pUp(e.changedTouches[0].clientX, e.changedTouches[0].clientY), { passive: true });
+    canvas.addEventListener('mousedown', e => { if (Date.now() - lastTouch < 500) return; pDown(e.clientX, e.clientY); });
+    canvas.addEventListener('mouseup',   e => { if (Date.now() - lastTouch < 500) return; pUp(e.clientX, e.clientY); });
+    canvas.addEventListener('touchstart', e => { lastTouch = Date.now(); pDown(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+    canvas.addEventListener('touchend',   e => { lastTouch = Date.now(); pUp(e.changedTouches[0].clientX, e.changedTouches[0].clientY); }, { passive: true });
 
     let state  = 'scattered';
     let formed = [];
@@ -154,6 +155,12 @@
     }
 
     Events.on(engine, 'beforeUpdate', () => {
+      Composite.allBodies(engine.world).forEach(b => {
+        if (!b.isStatic && b.velocity.y < 0) {
+          Body.applyForce(b, b.position, { x: 0, y: b.mass * 0.002 });
+        }
+      });
+
       if (state !== 'forming') return;
       let done = true;
       formed.forEach(b => {
