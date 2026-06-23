@@ -28,8 +28,18 @@
 
     const canvas = document.getElementById('world');
     const ctx    = canvas.getContext('2d');
-    let W = canvas.width  = window.innerWidth;
-    let H = canvas.height = window.innerHeight;
+    const dpr    = window.devicePixelRatio || 1;
+    let W = window.innerWidth;
+    let H = window.innerHeight;
+
+    function sizeCanvas() {
+      canvas.width        = W * dpr;
+      canvas.height       = H * dpr;
+      canvas.style.width  = W + 'px';
+      canvas.style.height = H + 'px';
+      ctx.scale(dpr, dpr);
+    }
+    sizeCanvas();
 
     const engine = Engine.create({ gravity: { y: 1.8 } });
     Runner.run(Runner.create(), engine);
@@ -45,25 +55,26 @@
 
     const CHARS = 'b0nd0'.repeat(16).split('');
     const bodies = [];
-    let si = 0;
+    let ready = false;
 
-    function spawn() {
-      if (si >= CHARS.length) return;
-      const ch = CHARS[si++];
-      const tw = ctx.measureText(ch).width + 10;
-      const b  = Bodies.rectangle(
-        60 + Math.random() * (W - 120),
-        -(SZ * 1.2),
-        tw, SZ * 1.2,
-        { restitution: 0.25, friction: 0.5, frictionAir: 0.01, label: ch }
-      );
-      Body.setAngularVelocity(b, (Math.random() - 0.5) * 0.2);
-      World.add(engine.world, b);
-      bodies.push(b);
-      if (si < CHARS.length) setTimeout(spawn, 55 + Math.random() * 55);
+    function spawnAll() {
+      ctx.font = FONT;
+      CHARS.forEach(ch => {
+        const tw = ctx.measureText(ch).width + 10;
+        const b  = Bodies.rectangle(
+          60 + Math.random() * (W - 120),
+          -(SZ + Math.random() * H * 0.7),
+          tw, SZ * 1.2,
+          { restitution: 0.25, friction: 0.5, frictionAir: 0.01, label: ch }
+        );
+        Body.setAngularVelocity(b, (Math.random() - 0.5) * 0.2);
+        World.add(engine.world, b);
+        bodies.push(b);
+      });
+      setTimeout(() => { ready = true; }, 2500);
     }
 
-    const go = () => { ctx.font = FONT; spawn(); };
+    const go = () => { spawnAll(); };
     const t  = setTimeout(go, 800);
     document.fonts.ready.then(() => { clearTimeout(t); go(); });
 
@@ -92,7 +103,7 @@
     let formed = [];
 
     function onTap() {
-      if (si < CHARS.length) return;
+      if (!ready) return;
       state === 'formed' ? scatter() : gather();
     }
 
@@ -210,8 +221,9 @@
     draw();
 
     window.addEventListener('resize', () => {
-      W = canvas.width  = window.innerWidth;
-      H = canvas.height = window.innerHeight;
+      W = window.innerWidth;
+      H = window.innerHeight;
+      sizeCanvas();
       Body.setPosition(floor,  { x: W / 2,  y: H + 30 });
       Body.setPosition(wallR,  { x: W + 30, y: H / 2  });
     });
