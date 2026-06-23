@@ -79,11 +79,13 @@
     document.fonts.ready.then(() => { clearTimeout(t); go(); });
 
     const mouse = Mouse.create(canvas);
+    Mouse.setScale(mouse, { x: 1 / dpr, y: 1 / dpr });
     const mc    = MouseConstraint.create(engine, {
       mouse,
       constraint: { stiffness: 0.15, damping: 0.1, render: { visible: false } },
     });
     World.add(engine.world, mc);
+    canvas.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
 
     let grabbing = false;
     Events.on(mc, 'startdrag', () => { grabbing = true; });
