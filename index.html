@@ -53,7 +53,8 @@
     const FONT = `300 ${SZ}px Inter, -apple-system, sans-serif`;
     ctx.font   = FONT;
 
-    const CHARS = 'b0nd0'.repeat(16).split('').slice(0, 72);
+    const COUNT = W < 768 ? 36 : 72;
+    const CHARS = 'b0nd0'.repeat(Math.ceil(COUNT / 5)).split('').slice(0, COUNT);
     const bodies = [];
     let ready = false;
 
@@ -106,7 +107,7 @@
     let formed = [];
 
     function onTap() {
-      if (!ready) return;
+      if (!ready || state === 'forming') return;
       state === 'formed' ? scatter() : gather();
     }
 
