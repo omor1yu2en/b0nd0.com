@@ -149,46 +149,9 @@ main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  position: relative;
-}
-
-.slider {
-  flex: 1;
-  display: flex;
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform;
-  user-select: none;
-}
-
-.slide {
-  flex: 0 0 100%;
-  display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
-}
-
-.page-dots {
-  position: fixed;
-  bottom: 2.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 7px;
-  z-index: 10;
-}
-
-.dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.2);
-  transition: background 0.25s;
-}
-
-.dot.active {
-  background: rgba(0, 0, 0, 0.75);
 }
 
 .tagline {
