@@ -235,7 +235,7 @@ main {
 /* Photos */
 .photo-list {
   width: 100%;
-  max-width: 680px;
+  max-width: 816px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
