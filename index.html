@@ -100,7 +100,7 @@
     canvas.addEventListener('mousedown', e => { if (Date.now() - lastTouch < 500) return; pDown(e.clientX, e.clientY); });
     canvas.addEventListener('mouseup',   e => { if (Date.now() - lastTouch < 500) return; pUp(e.clientX, e.clientY); });
     canvas.addEventListener('touchstart', e => { lastTouch = Date.now(); pDown(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
-    canvas.addEventListener('touchend',   e => { lastTouch = Date.now(); pUp(e.changedTouches[0].clientX, e.changedTouches[0].clientY); }, { passive: true });
+    canvas.addEventListener('touchend',   e => { e.preventDefault(); lastTouch = Date.now(); pUp(e.changedTouches[0].clientX, e.changedTouches[0].clientY); });
 
     let state  = 'scattered';
     let formed = [];
@@ -156,7 +156,7 @@
 
     Events.on(engine, 'beforeUpdate', () => {
       Composite.allBodies(engine.world).forEach(b => {
-        if (!b.isStatic && b.velocity.y < 0) {
+        if (!b.isStatic && b.velocity.y < -1) {
           Body.applyForce(b, b.position, { x: 0, y: b.mass * 0.002 });
         }
       });
