@@ -92,16 +92,15 @@
     Events.on(mc, 'startdrag', () => { grabbing = true; });
 
     let downAt = null;
-    let lastTouch = 0;
     function pDown(x, y) { grabbing = false; downAt = { x, y }; }
     function pUp(x, y) {
       if (!grabbing && downAt && Math.hypot(x - downAt.x, y - downAt.y) < 8) onTap();
       downAt = null;
     }
-    canvas.addEventListener('mousedown', e => { if (Date.now() - lastTouch < 500) return; pDown(e.clientX, e.clientY); });
-    canvas.addEventListener('mouseup',   e => { if (Date.now() - lastTouch < 500) return; pUp(e.clientX, e.clientY); });
-    canvas.addEventListener('touchstart', e => { e.preventDefault(); lastTouch = Date.now(); pDown(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
-    canvas.addEventListener('touchend',   e => { e.preventDefault(); lastTouch = Date.now(); pUp(e.changedTouches[0].clientX, e.changedTouches[0].clientY); });
+    canvas.addEventListener('mousedown',  e => pDown(e.clientX, e.clientY));
+    canvas.addEventListener('mouseup',    e => pUp(e.clientX, e.clientY));
+    canvas.addEventListener('touchstart', e => { e.preventDefault(); pDown(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
+    canvas.addEventListener('touchend',   e => { e.preventDefault(); pUp(e.changedTouches[0].clientX, e.changedTouches[0].clientY); });
 
     let state  = 'scattered';
     let formed = [];
@@ -165,12 +164,12 @@
       });
 
       if (state !== 'forming') return;
+      const gatherK = W < 768 ? 0.0014 : 0.0032;
       let done = true;
       formed.forEach(b => {
         const dx = b._tx - b.position.x;
         const dy = b._ty - b.position.y;
         if (Math.hypot(dx, dy) > 3) done = false;
-        const gatherK = W < 768 ? 0.0014 : 0.0032;
         Body.applyForce(b, b.position, { x: dx * gatherK, y: dy * gatherK });
         Body.setVelocity(b, { x: b.velocity.x * 0.87, y: b.velocity.y * 0.87 });
         const da = ((b._ta - b.angle + Math.PI) % (Math.PI * 2)) - Math.PI;
