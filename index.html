@@ -165,11 +165,12 @@
 
       if (state !== 'forming') return;
       const gatherK = W < 768 ? 0.0014 : 0.0032;
+      const snapThreshold = W < 768 ? 8 : 3;
       let done = true;
       formed.forEach(b => {
         const dx = b._tx - b.position.x;
         const dy = b._ty - b.position.y;
-        if (Math.hypot(dx, dy) > 3) done = false;
+        if (Math.hypot(dx, dy) > snapThreshold) done = false;
         Body.applyForce(b, b.position, { x: dx * gatherK, y: dy * gatherK });
         Body.setVelocity(b, { x: b.velocity.x * 0.87, y: b.velocity.y * 0.87 });
         const da = ((b._ta - b.angle + Math.PI) % (Math.PI * 2)) - Math.PI;
